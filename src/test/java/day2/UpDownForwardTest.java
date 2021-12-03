@@ -16,8 +16,14 @@ class UpDownForwardTest {
 
     @Test
     void solve() throws IOException {
-        UpDownForward.Solution solve = UpDownForward.solve();
-        System.out.println("depth:" + solve.depth+", x= " + solve.x+", mul="+solve.depth*solve.x);
-        assertEquals(1893605, solve.depth*solve.x);
+        UpDownForward.Solution solution = UpDownForward.solve();
+        System.out.println("depth:" + solution.depth+", x= " + solution.x+", mul="+solution.depth*solution.x);
+        assertEquals(1893605, solution.depth*solution.x);
+    }
+
+    @Test
+    void solve2() throws IOException {
+        UpDownForward.SolutionWithAim solution = UpDownForward.solveWithAimLoop();
+        System.out.println("depth:" + solution.depth+", x= " + solution.x+", mul="+solution.depth*solution.x);
     }
 }

@@ -84,13 +84,13 @@ public class UpDownForward {
             switch (journeyData.direction) {
                 case FORWARD:
                     x = journeyData.value;
-                    depth = currentAim*journeyData.value;
+                    depth = currentAim * journeyData.value;
                     break;
                 case UP:
-                    newAim = currentAim - journeyData.value;
+                    newAim = -journeyData.value;
                     break;
                 case DOWN:
-                    newAim = currentAim + journeyData.value;
+                    newAim = journeyData.value;
             }
             return new SolutionWithAim(x, depth, newAim);
         }
@@ -118,11 +118,32 @@ public class UpDownForward {
                 .orElseThrow();
     }
 
-    public static Solution solveWithAim() throws IOException {
+    public static SolutionWithAim solveWithAim() throws IOException {
         List<JourneyData> journeyData = loadInputs();
         return journeyData.stream()
-                .reduce(new SolutionWithAim(0,0,0),
-                        (acc, toAdd) -> SolutionWithAim.journeyToSolutionWithAim(toAdd, acc.aim)
-                    , SolutionWithAim::add);
+                .reduce(new SolutionWithAim(0, 0, 0),
+                        (acc, toAdd) -> SolutionWithAim.journeyToSolutionWithAim(toAdd, acc.aim),
+                        SolutionWithAim::add);
+    }
+
+    public static SolutionWithAim solveWithAimLoop() throws IOException {
+        List<JourneyData> journeyData = loadInputs();
+        int x = 0;
+        int depth = 0;
+        int aim = 0;
+        for(JourneyData journey : journeyData) {
+            switch (journey.direction) {
+                case FORWARD:
+                    x += journey.value;
+                    depth += aim * journey.value;
+                    break;
+                case UP:
+                    aim -= journey.value;
+                    break;
+                case DOWN:
+                    aim += journey.value;
+            }
+        }
+        return new SolutionWithAim(x, depth, aim);
     }
 }
