@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class UpDownForward {
     private enum Direction {
@@ -115,7 +116,7 @@ public class UpDownForward {
         return journeyData.stream()
                 .map(Solution::journeyToSolution)
                 .reduce(Solution::add)
-                .orElseThrow();
+                .get();
     }
 
     public static SolutionWithAim solveWithAim() throws IOException {

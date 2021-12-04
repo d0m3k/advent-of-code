@@ -3,6 +3,8 @@ package day3;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static day3.PowerConsumption.loadInputs;
 
@@ -26,9 +28,9 @@ public class LifeSupport {
             // co2 scubba
             for (int i = 0; i < outputWidth; i++) {
                 if (countOfOnesScrubber.get(i) < countOfZerosScrubber.get(i)) {
-                    oxygenGenerator.append("1");
+                    co2Scrubber.append("1");
                 } else {
-                    oxygenGenerator.append("0");
+                    co2Scrubber.append("0");
                 }
             }
 
@@ -39,19 +41,19 @@ public class LifeSupport {
 
         @Override
         public String toString() {
-            int epsilon = Integer.parseInt(epsilonInBinary, 2);
-            int gamma = Integer.parseInt(gammaInBinary, 2);
+            int oxygenGenRating = Integer.parseInt(oxygenGeneratorRatingBinary, 2);
+            int co2Scrubber = Integer.parseInt(co2ScrubberRatingBinary, 2);
             return "Solution{" +
-                    "epsilonInBinary='" + epsilonInBinary + '\'' +
-                    ", gammaInBinary='" + gammaInBinary + '\'' +
-                    ", epsilon='" + epsilon + '\'' +
-                    ", gamma='" + gamma + '\'' +
-                    ", solution='" + epsilon * gamma + '\'' +
+                    "oxygenGeneratorRatingBinary='" + oxygenGeneratorRatingBinary + '\'' +
+                    ", co2ScrubberRatingBinary='" + co2ScrubberRatingBinary + '\'' +
+                    ", oxygenGenRating='" + oxygenGenRating + '\'' +
+                    ", co2Scrubber='" + co2Scrubber + '\'' +
+                    ", solution='" + oxygenGenRating * co2Scrubber + '\'' +
                     '}';
         }
     }
 
-    public static PowerConsumption.Solution solve() {
+    public static Solution solve() {
         List<String> lines = loadInputs();
         int outputWidth = lines.get(0).length();
         //oxygen
@@ -72,11 +74,43 @@ public class LifeSupport {
                 }
             }
             if (countOfOnesOxygen.get(i) >= countOfZerosOxygen.get(i)) {
-                lines = prune(lines, i, 0);
+                lines = keep(lines, i, 1);
             } else {
-                lines = prune(lines, i, 1);
+                lines = keep(lines, i, 0);
             }
         }
-        return new PowerConsumption.Solution(countOfZeros, countOfOnes, outputWidth);
+
+        lines = loadInputs();
+        Map<Integer, Integer> countOfOnesScrubber = new HashMap<>();
+        Map<Integer, Integer> countOfZerosScrubber = new HashMap<>();
+        for (int i = 0; i < outputWidth; i++) {
+            countOfOnesScrubber.put(i, 0);
+            countOfZerosScrubber.put(i, 0);
+        }
+
+        for (int i = 0; i < outputWidth && lines.size()>1; i++) {
+            for (String line : lines) {
+                char j = line.charAt(i);
+                if (j == '0') {
+                    countOfZerosScrubber.put(i, countOfZerosScrubber.get(i) + 1);
+                } else {
+                    countOfOnesScrubber.put(i, countOfOnesScrubber.get(i) + 1);
+                }
+            }
+            if (countOfOnesScrubber.get(i) < countOfZerosScrubber.get(i)) {
+                lines = keep(lines, i, 1);
+            } else {
+                lines = keep(lines, i, 0);
+            }
+        }
+        return new Solution(countOfZerosOxygen, countOfOnesOxygen, countOfZerosScrubber, countOfOnesScrubber, outputWidth);
     }
+
+    private static List<String> keep(List<String> lines, int index, int valueToKeep) {
+        Stream<String> stringStream = lines.stream()
+                .filter(line -> line.charAt(index) == valueToKeep);
+        return stringStream.collect(Collectors.toList());
+    }
+
+
 }

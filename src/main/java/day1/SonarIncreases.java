@@ -20,23 +20,23 @@ public class SonarIncreases {
         return result;
     }
 
-    public static long solveStream() throws IOException {
-        List<Integer> inputs = loadInputs();
-        var lambdaContext = new Object() {
-            int currentOne = Integer.MAX_VALUE;
-            int previousOne = Integer.MAX_VALUE;
-        };
-        return inputs.stream()
-                .peek(x -> {
-                    System.out.println("Now going through " + x);
-                    lambdaContext.currentOne = x;
-                    if (lambdaContext.previousOne<Integer.MAX_VALUE) {
-                        lambdaContext.previousOne = lambdaContext.currentOne;
-                    }
-                })
-                .filter(x -> x>lambdaContext.previousOne)
-                .count();
-    }
+//    public static long solveStream() throws IOException {
+//        List<Integer> inputs = loadInputs();
+//        Object lambdaContext = new Object() {
+//            int currentOne = Integer.MAX_VALUE;
+//            int previousOne = Integer.MAX_VALUE;
+//        };
+//        return inputs.stream()
+//                .peek(x -> {
+//                    System.out.println("Now going through " + x);
+//                    lambdaContext.currentOne = x;
+//                    if (lambdaContext.previousOne<Integer.MAX_VALUE) {
+//                        lambdaContext.previousOne = lambdaContext.currentOne;
+//                    }
+//                })
+//                .filter(x -> x>lambdaContext.previousOne)
+//                .count();
+//    }
 
     public static long solveRegularLoop() throws IOException {
         List<Integer> inputs = loadInputs();
