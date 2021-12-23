@@ -14,11 +14,11 @@ public class LifeSupport {
         final String co2ScrubberRatingBinary;
 
 
-        public Solution(Map<Integer, Integer> countOfZerosOxygen, Map<Integer, Integer> countOfOnesOxygen, Map<Integer, Integer> countOfZerosScrubber, Map<Integer, Integer> countOfOnesScrubber, int outputWidth) {
+        public Solution(Map<Integer, Integer> countOfZerosOxygen, Map<Integer, Integer> countOfOnesOxygen, Map<Integer, Integer> countOfZerosScrubber, Map<Integer, Integer> countOfOnesScrubber) {
             StringBuffer oxygenGenerator = new StringBuffer();
             StringBuffer co2Scrubber = new StringBuffer();
             // oxygen generator
-            for (int i = 0; i < outputWidth; i++) {
+            for (int i = 0; i < countOfOnesOxygen.size(); i++) {
                 if (countOfOnesOxygen.get(i) >= countOfZerosOxygen.get(i)) {
                     oxygenGenerator.append("1");
                 } else {
@@ -26,7 +26,7 @@ public class LifeSupport {
                 }
             }
             // co2 scubba
-            for (int i = 0; i < outputWidth; i++) {
+            for (int i = 0; i < countOfOnesScrubber.size(); i++) {
                 if (countOfOnesScrubber.get(i) < countOfZerosScrubber.get(i)) {
                     co2Scrubber.append("1");
                 } else {
@@ -64,7 +64,14 @@ public class LifeSupport {
             countOfZerosOxygen.put(i, 0);
         }
 
-        for (int i = 0; i < outputWidth && lines.size()>1; i++) {
+        for (int i = 0; i < outputWidth && !lines.isEmpty(); i++) {
+            if (lines.size() <= 1) {
+                for (int j=i; j<outputWidth; j++) {
+                    countOfOnesOxygen.remove(j);
+                    countOfZerosOxygen.remove(j);
+                }
+                break;
+            }
             for (String line : lines) {
                 char j = line.charAt(i);
                 if (j == '0') {
@@ -80,6 +87,7 @@ public class LifeSupport {
             }
         }
 
+        // scubber
         lines = loadInputs();
         Map<Integer, Integer> countOfOnesScrubber = new HashMap<>();
         Map<Integer, Integer> countOfZerosScrubber = new HashMap<>();
@@ -88,7 +96,14 @@ public class LifeSupport {
             countOfZerosScrubber.put(i, 0);
         }
 
-        for (int i = 0; i < outputWidth && lines.size()>1; i++) {
+        for (int i = 0; i < outputWidth && !lines.isEmpty(); i++) {
+            if(lines.size() <= 1) {
+                for (int j=i; j<outputWidth; j++) {
+                    countOfOnesScrubber.remove(j);
+                    countOfZerosScrubber.remove(j);
+                }
+                break;
+            }
             for (String line : lines) {
                 char j = line.charAt(i);
                 if (j == '0') {
@@ -103,13 +118,15 @@ public class LifeSupport {
                 lines = keep(lines, i, 0);
             }
         }
-        return new Solution(countOfZerosOxygen, countOfOnesOxygen, countOfZerosScrubber, countOfOnesScrubber, outputWidth);
+        return new Solution(countOfZerosOxygen, countOfOnesOxygen, countOfZerosScrubber, countOfOnesScrubber);
     }
 
     private static List<String> keep(List<String> lines, int index, int valueToKeep) {
         Stream<String> stringStream = lines.stream()
-                .filter(line -> line.charAt(index) == valueToKeep);
-        return stringStream.collect(Collectors.toList());
+                .filter(line -> line.charAt(index) == valueToKeep+48); // remember that valueToKeep is int, but char is char – and ASCII '0' is 48 x))
+        List<String> result = stringStream.collect(Collectors.toList());
+        System.out.println("Ending with lines count: " + result.size() + " at index " +index);
+        return result;
     }
 
 
