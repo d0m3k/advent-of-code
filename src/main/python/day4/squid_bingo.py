@@ -26,11 +26,15 @@ for i in range(0, len(values)):
 # add last one, because for loop is not friendly
 boards.append(current_board)
 
+# and let's count boards, so we can assume we are finding bingo boards till the last one comes
+bingoed_already = set() # you could not just count, because board can easily "bingo" more than once before another bingoes
+bingo_max = len(boards)
+
 print("Numbers we have: {}, boards: {}".format(numbers, boards))
 
 
 # dear god, what an awful complexity ;)
-def find_bingo_table():
+def find_bingo_table(bingoed_already, bingo_max):
     for current_number in numbers:
         print("Marking {}...".format(current_number))
         for board_i in range(0, len(boards)):
@@ -48,7 +52,9 @@ def find_bingo_table():
                         if check_rows(row) or check_columns(board, field_i):
                             print("Hit the bingo in {} (0-indexed) table while getting {}!".format(board_i,
                                                                                                    current_number))
-                            return (board_i, current_number)
+                            bingoed_already.add(board_i)
+                            if len(bingoed_already) == bingo_max:
+                                return board_i, current_number
 
 
 def check_rows(row):
@@ -62,7 +68,8 @@ def check_columns(board, field_i):
     return len([x for x in res if x[1] is True]) == BOARD_WIDTH
 
 
-bingo_index, bingo_number = find_bingo_table()
+# you can get to the first part result by setting bingo_max to 1
+bingo_index, bingo_number = find_bingo_table(bingoed_already, bingo_max)
 
 print("Numbers we have: {}, boards: {}".format(numbers, boards))
 
