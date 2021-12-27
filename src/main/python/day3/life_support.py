@@ -7,36 +7,48 @@ values = values_f.readlines()
 data_width = len(values[0])
 
 
-# calculate oxygen
-oxygen_values = values.copy()
+def calculate_for(name, values, comparator):
+    # calculate oxygen
+    calc_values = values.copy()
 
-oxygen_result = ''
+    calc_result = ''
 
-for column in range(0, data_width-1):
-    print("Column number {}".format(column))
-    o_len = len(oxygen_values)
+    for column in range(0, data_width-1):
+        print("Column number {}".format(column))
+        o_len = len(calc_values)
 
-    if o_len == 0:
-        break
+        if o_len == 1:
+            break
 
-    count_ones = 0
+        count_ones = 0
 
-    for line in oxygen_values:
-        current_val = line[column]
-        if current_val == '1':
-            count_ones += 1
+        for line in calc_values:
+            current_val = line[column]
+            if current_val == '1':
+                count_ones += 1
 
-    count_zeros = o_len - count_ones
+        count_zeros = o_len - count_ones
 
-    if count_ones >= count_zeros:
-        chosen_number = '1'
-    else:
-        chosen_number = '0'
+        if comparator(count_ones, count_zeros):
+            chosen_number = '1'
+        else:
+            chosen_number = '0'
 
-    oxygen_result += chosen_number
-    oxygen_values = [line for line in oxygen_values if line[column] == chosen_number]
-    print("Chosen number {}; Oxygen values now has len {}, values: {}; current res: {}".format(chosen_number, len(oxygen_values), oxygen_values, oxygen_result))
+        calc_result += chosen_number
+        calc_values = [line for line in calc_values if line[column] == chosen_number]
+        print("Chosen number {}; {} values now has len {}, values: {}; current res: {}".format(chosen_number, name, len(calc_values), calc_values, calc_result))
 
-print("Oxygen result is {}, oxygen values: {}".format(oxygen_result, oxygen_values))
+    result = calc_values[0]
+    print("Result is what is left as last value, and that is {} (dec".format(result, int(result, 2)))
+    return int(result, 2)
+    # written record of my original misunderstanding of what we are looking for (similarly to first part of today)
+    # print("{} result is {} (dec: {}), values: {}".format(name, calc_result, int(calc_result, 2), calc_values))
+    # return int(calc_result, 2)
+
+
+dec_oxygen = calculate_for('Oxygen', values, (lambda ones, zeros: ones >= zeros))
+dec_scrubber = calculate_for('Scrubber', values, (lambda ones, zeros: ones < zeros))
+# 010110010011 / 1427
 
 # calculate scrubber
+print("Final result: {}".format(dec_oxygen * dec_scrubber))
