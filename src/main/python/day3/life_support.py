@@ -13,7 +13,7 @@ def calculate_for(name, values, comparator):
 
     calc_result = ''
 
-    for column in range(0, data_width-1):
+    for column in range(0, data_width):
         print("Column number {}".format(column))
         o_len = len(calc_values)
 
@@ -39,7 +39,7 @@ def calculate_for(name, values, comparator):
         print("Chosen number {}; {} values now has len {}, values: {}; current res: {}".format(chosen_number, name, len(calc_values), calc_values, calc_result))
 
     result = calc_values[0]
-    print("Result is what is left as last value, and that is {} (dec".format(result, int(result, 2)))
+    print("Result is what is left as last value, and that is {} (dec: {})".format(result, int(result, 2)))
     return int(result, 2)
     # written record of my original misunderstanding of what we are looking for (similarly to first part of today)
     # print("{} result is {} (dec: {}), values: {}".format(name, calc_result, int(calc_result, 2), calc_values))
