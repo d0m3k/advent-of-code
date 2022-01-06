@@ -8,9 +8,9 @@ def get_line_tuple(line):
     p2 = pairs[1].split(',')
     return (int(p1[0]), int(p1[1])), (int(p2[0]), int(p2[1]))
 
-
+# for the case of diagonals, lets go with True for a while
 def isLine(x):
-    return x[0][0] == x[1][0] or x[0][1] == x[1][1]
+    return True or x[0][0] == x[1][0] or x[0][1] == x[1][1]
 
 
 def get_max(just_lines_tuples, index_inside):
@@ -61,11 +61,34 @@ def draw_vertical_line(board, y1, x1, x2):
         board[x][y1] += 1
 
 
+def draw_diagonal_line(board, x1, y1, x2, y2):
+    # make sure you have proper flips for ranges
+    # but you cannot just simply flip in case of diagonal - you need to know direction
+    print(f'Drawing diagonal for ({x1},{y1}) -> ({x2}, {y2})')
+    if x1 > x2:
+        x1, x2 = x2, x1
+        y1, y2 = y2, y1
+
+    print(f'Drawing diagonal for ({x1},{y1}) -> ({x2}, {y2})')
+    # it is guaranteed that x-based range is rising, so:
+    y = y1
+    for x in range(x1, x2+1):
+        board[x][y] += 1
+        # ...but now you need to behave in both of ways.
+        if y2 > y1:
+            y += 1
+        else:
+            y -= 1
+
+
 for (x1, y1), (x2, y2) in just_lines_tuples:
-    if x1 == x2:
+    print(f'{(x1, y1), (x2, y2)}')
+    if abs(x1-x2) == abs(y1-y2):
+        draw_diagonal_line(board, x1, y1, x2, y2)
+    elif x1 == x2:
         print(f'Drawing horizontal for x={x1}, y=({y1},{y2})')
         draw_horizontal_line(board, x1, y1, y2)
-    if y1 == y2:
+    elif y1 == y2:
         print(f'Drawing vertical for y={y1}, x=({x1},{x2})')
         draw_vertical_line(board, y1, x1, x2)
 
