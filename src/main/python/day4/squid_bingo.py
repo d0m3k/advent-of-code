@@ -78,7 +78,8 @@ def score_board(bingo_index, bingo_number):
     flat_list = list(itertools.chain.from_iterable(boards[bingo_index]))
     print("List of {} table is: {}".format(bingo_index, flat_list))
     unmarked_sum = reduce(int.__add__, [int(x[0]) for x in flat_list if not x[1]])
-    print("So the result is {} * {} = {}".format(bingo_number, unmarked_sum, int(bingo_number) * unmarked_sum))
+    print(f"So the result is {bingo_number} * {unmarked_sum} = { int(bingo_number) * unmarked_sum }")
+
 
 
 score_board(bingo_index, bingo_number)
