@@ -8,17 +8,17 @@ fish_table = [int(x) for x in values_f.readline().split(',')]
 
 DAYS = 80
 
-
-def how_much_is_the(fish, days):
+# fish = cycle_day
+def how_much_is_the(cycle_day, days):
     if days == 0:
         return 1
-    elif fish == 0:
+    elif cycle_day == 0:
         return how_much_is_the(8, days-1) + how_much_is_the(6, days-1)
 # slight optimisation: if you are lively fish, drop some days immediately
-    elif days > fish:
-        return how_much_is_the(0, days-fish)
+    elif days > cycle_day:
+        return how_much_is_the(0, days - cycle_day)
     else:
-        return how_much_is_the(fish-1, days-1)
+        return how_much_is_the(cycle_day - 1, days - 1)
 
 
 # if you successfuly calculate one fish result, you can just reuse the same result for any fish starting with the same number
@@ -33,3 +33,4 @@ for i in range(0, len(fish_table)):
 # fish_result = [how_much_is_the(fish, DAYS) for fish in fish_table]
 
 print(f"{fish_result}, sum {reduce(int.__add__, fish_result)}")
+
