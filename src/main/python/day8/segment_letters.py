@@ -1,4 +1,4 @@
-day_8_input_path = '../../resources/day-8-input-short'
+day_8_input_path = '../../resources/day-8-input'
 
 values_f = open(day_8_input_path, 'r')
 values = [x.strip().split(' | ') for x in values_f.readlines()]
