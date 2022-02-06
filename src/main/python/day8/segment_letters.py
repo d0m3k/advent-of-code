@@ -37,6 +37,15 @@ print(f"{length_map[2] + length_map[4] + length_map[3] + length_map[7]}")
 # 6s: 6,9,0
 # 7s: 8
 
+# non uniques:
+# 2: have 1 common with 1, 2 common with 7, 2 common with 4, 5 common with 8
+# 3: have 2 common with 1, 3 common with 7, 3 common with 4, 5 common with 8
+# 5: have 1 common with 1, 2 common with 7, 3 common with 4, 5 common with 8
+
+# 6: have 1 common with 1, 2 common with 7, 3 common with 4, 6 common with 8
+# 9: have 2 common with 1, 3 common with 7, 4 common with 4, 6 common with 8
+# 0: have 2 common with 1, 3 common with 7, 3 common with 4, 6 common with 8
+
 # TODO: below is fully WIP
 
 # TODO: you will probably want to sort signals to make sure you get the same left-right
