@@ -1,6 +1,6 @@
 from functools import reduce
 
-day_9_input_path = '../../resources/day-9-input-short'
+day_9_input_path = '../../resources/day-9-input'
 
 values_f = open(day_9_input_path, 'r')
 values = [[int(y) for y in x.strip()] for x in values_f.readlines()]
@@ -12,7 +12,7 @@ low_points_locs = []
 
 def is_low_point(i, j):
     val = values[i][j]
-    print(f"Considering values[{i}][{j}] = {val}")
+    # print(f"Considering values[{i}][{j}] = {val}")
 
     left = (i-1 < 0 or val < values[i-1][j])
     up = (j-1 < 0 or val < values[i][j-1])
@@ -25,6 +25,17 @@ def is_low_point(i, j):
 already_visited = {}
 
 
+def smallest_neighbour(i, j):
+    val = values[i][j]
+
+    left = values[i-1][j] if i-1 >= 0 else 10
+    up = values[i][j-1] if j-1 >= 0 else 10
+    right = values[i+1][j] if i+1 < len(values) else 10
+    down = values[i][j+1] if j+1 < len(values[i]) else 10
+
+    return min(left, up, right, down)
+
+
 def get_basin(i, j, basin):
     val = values[i][j]
     print(f"Considering values[{i}][{j}] = {val}")
@@ -33,24 +44,16 @@ def get_basin(i, j, basin):
         return basin
     already_visited[(i, j)] = True
 
-    # if val != 9:
-    #     basin.append((i, j))
-    # else:
-    #     return basin
-
-    # if val == 9 or i-1 < 0 or j-1 < 0 or i >= len(values) or j >= len(values[i]):
-    #     return basin
-
-    if i-1 >= 0 and values[i-1][j] - val == 1:
+    if i-1 >= 0 and values[i-1][j] < 9 and smallest_neighbour(i-1, j) == val:
         basin.append((i-1, j))
         get_basin(i-1, j, basin)
-    if j-1 >= 0 and values[i][j-1] - val == 1:
+    if j-1 >= 0 and values[i][j-1] < 9 and smallest_neighbour(i, j-1) == val:
         basin.append((i, j-1))
         get_basin(i, j-1, basin)
-    if i+1 < len(values) and values[i+1][j] - val == 1:
+    if i+1 < len(values) and values[i+1][j] < 9 and smallest_neighbour(i+1, j) == val:
         basin.append((i+1, j))
         get_basin(i+1, j, basin)
-    if j+1 < len(values[i]) and values[i][j+1] - val == 1:
+    if j+1 < len(values[i]) and values[i][j+1] < 9 and smallest_neighbour(i, j+1) == val:
         basin.append((i, j+1))
         get_basin(i, j+1, basin)
 
@@ -66,6 +69,7 @@ for i in range(0, len(values)):
             low_points_locs.append((i, j))
 
 print(f"Locs: {low_points_locs}")
+print(f"Low point count: {len(low_points)}")
 risk_levels = [x+1 for x in low_points]
 print(f"Risk levels: {risk_levels}, sum: {reduce(int.__add__, risk_levels)}")
 
@@ -78,4 +82,17 @@ top_3_basins = [basins[x] for x in range(0,3)]
 
 print(f"Basins: {basins}, TOP3: {top_3_basins}, sizes: {[len(x) for x in top_3_basins]}")
 
-# print(f"Already visited: {already_visited}")
+print(f"Top 3 mul: {reduce(int.__mul__, [len(x) for x in top_3_basins])}")
+# height = len(values)
+# length = len(values[0])
+
+funMap = "abcdefghijklmnoprstquvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<>//><';!@#$%^&*(){}_+|?WERTYUIOPPASDFGHJKLXCVBNMqwertyuiopasdfghjklzxcvbnmmasjdhakcjnaxkcjbaskdjhaskjdhskjadnkjhxkjnckjhdkajhsdkjhqwkjehkjahskdjhkfjahkjhdasdasda"
+
+toColor = values.copy()
+
+for basin_index in range(0, len(basins)):
+    for (i,j) in basins[basin_index]:
+        toColor[i][j] = funMap[basin_index+1]
+
+print("Colored stuff:")
+[print("".join([f"{sign}" for sign in line])) for line in toColor]
