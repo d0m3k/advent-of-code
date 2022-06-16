@@ -1,4 +1,4 @@
-day_12_input_path = '../../resources/day-12-input-example'
+day_12_input_path = '../../resources/day-12-input'
 
 
 def get_path_tuple(line):
@@ -27,26 +27,33 @@ found_paths = set()
 
 
 def is_small_cave(name):
-    return name.islower()
+    return name.islower() and name != 'start' and name != 'end'
 
 
 # start going into it by finding all start ones
 # then, recursively get inside
 # the stop params are re-entering already visited small cave (return 0), or visiting 'end' (return 1)
-def traverse_cave(current_point, next_point, already_visited):
+def traverse_cave(current_point, next_point, already_visited, special_chance):
     new_visited = already_visited.copy()
     # print(f"I'm at {current_point}, next is {next_point}, already been to {already_visited}")
-    if is_small_cave(current_point) and current_point in new_visited:
-        # print(f"Got into small cave case.")
-        return new_visited
-    new_visited.append(current_point)
     if current_point == 'end':
         # print(f"Got into end.")
+        new_visited.append(current_point)
         found_paths.add(tuple(new_visited))
         return new_visited
-    return [traverse_cave(a, b, new_visited) for a, b in tuples if a == next_point]
+    if is_small_cave(current_point) and current_point in new_visited:
+        # did we get into some cave we've already been in? If so, let's check if we have our chance
+        # print(f"Got into small cave case.")
+        if not special_chance:
+            return new_visited
+        special_chance = False
+    if current_point == 'start' and len(already_visited) > 0:
+        return new_visited
+    new_visited.append(current_point)
+    return [traverse_cave(a, b, new_visited, special_chance) for a, b in tuples if a == next_point]
 
 
-print([traverse_cave(a, b, []) for a, b in tuples if a == 'start'])
+# change last argument to False for basic case
+[traverse_cave(a, b, [], True) for a, b in tuples if a == 'start']
 print(found_paths)
 print(f"Found paths length: {len(found_paths)}")
