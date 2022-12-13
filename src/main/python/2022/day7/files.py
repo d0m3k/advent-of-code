@@ -1,4 +1,4 @@
-day_7_input_path = '../../../resources/2022/day7-input-example'
+day_7_input_path = '../../../resources/2022/day7-input'
 
 
 values_f = open(day_7_input_path, 'r')
@@ -49,9 +49,17 @@ def weight_dirs(dir):
     return weight
 
 
-print(f"{weight_dirs(dirs['/'])}")
+currently_taken = weight_dirs(dirs['/'])
+print(f" Full weight is: {currently_taken}")
+ALL_SIZE = 70000000
+MINIMUM_REQUIRED = 30000000
+left_size = ALL_SIZE - currently_taken
+required_more = MINIMUM_REQUIRED - left_size
+print(f"There is {left_size} left, we need {required_more} more")
+
 print(f"{dirs}")
 
+sizes = []
 
 def find_all_below(dir, threshold):
     weight, children, parent = dir
@@ -59,10 +67,13 @@ def find_all_below(dir, threshold):
     if children is not None:
         for child in children.values():
             sum += find_all_below(child, threshold)
-        if weight < threshold:
+        if weight > threshold:
             print(f"Current dir weight {weight}")
+            sizes.append(weight)
             return sum + weight
     return sum
 
 
-print(f"{find_all_below(dirs['/'], 100000)}")
+print(f"{find_all_below(dirs['/'], required_more)}")
+sizes.sort()
+print(f"{sizes}")
