@@ -1,7 +1,7 @@
-day_1_input_path = '../../../resources/2023/day1'
+input_path = '../../../resources/2023/day1'
 
 
-values_f = open(day_1_input_path, 'r')
+values_f = open(input_path, 'r')
 
 digits = {
     "one": 1,
@@ -24,7 +24,6 @@ def number_or_literal_number(line, i):
     if letter.isnumeric():
         return int(letter)
 
-    alpha_number = None
     if line[i:i+3] in digits.keys():
         return digits[line[i:i+3]]
     if line[i:i+4] in digits.keys():
